@@ -1,0 +1,42 @@
+  name: CI/CD Pipeline
+
+  on:
+    push:
+      branches: [ main ]
+
+  jobs:
+    checkout:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        - name: Checkout stage
+          run: echo "Stage 1 Checkout - code pulled from repository"
+
+    build:
+      runs-on: ubuntu-latest
+      needs: checkout
+      steps:
+        - name: Build stage
+          run: echo "Stage 2 Build - will compile with Maven"
+
+    test:
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+        - name: Test stage
+          run: echo "Stage 3 Test - will run JUnit tests"
+
+    ai-review:
+      runs-on: ubuntu-latest
+      needs: test
+      steps:
+        - name: AI Review stage
+          run: echo "Stage 4 AI Review - will send diff to LLM"
+
+    deploy:
+      runs-on: ubuntu-latest
+      needs: ai-review
+      steps:
+        - name: Deploy stage
+          run: echo "Stage 5 Deploy - will deploy to Kubernetes"
